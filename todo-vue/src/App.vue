@@ -84,6 +84,27 @@ const tareasFiltradas = computed(() => {
   return resultado;
 });
 
+// computed para contar tareas pendientes y completadas
+const pendientes = computed(() =>
+  tareas.value.filter((t) => !t.completada).length
+);
+
+const completadas = computed(() =>
+  tareas.value.filter((t) => t.completada).length
+);
+
+const total = computed(() => tareas.value.length);
+
+const mensajeContador = computed(() => {
+  if (filtro.value === "Pendientes") {
+    return `${pendientes.value} pendientes de ${total.value}`;
+  } else if (filtro.value === "Completadas") {
+    return `${completadas.value} completadas de ${total.value}`;
+  } else {
+    return `${total.value} tareas totales`;
+  }
+});
+
 // cargar tareas al iniciar la app 
 onMounted(async() =>{
   obtenerTareas();
@@ -97,15 +118,18 @@ onMounted(async() =>{
       <h1 class="text-center">Lista de Tareas</h1>
       <v-container>
         <!-- barra de ordenamiento y filtros -->
-          <v-row class="mb-4">
-          <v-col cols="6">
-            <v-select
-              v-model="filtro"
-              :items="['Todas', 'Pendientes', 'Completadas']"
-              label="Filtrar tareas"
-            />
+        <v-row class="mb-4 align-center">
+          <v-col cols="4">
+            <v-select v-model="filtro" :items="['Todas', 'Pendientes', 'Completadas']" label="Filtrar tareas" />
+          </v-col>
+
+          <v-col cols="4" class="text-right">
+            <v-chip color="primary" dark>
+               {{ mensajeContador }}
+            </v-chip>
           </v-col>
         </v-row>
+
         <div>          
           <!-- pasar funciones y estados como props -->
           <FormTarea @agregar-tarea="agregarTarea" /> <!-- formulario de creacion de tareas -->
