@@ -1,11 +1,12 @@
 <script setup>
-import {ref, onMounted} from 'vue'
+import {ref, onMounted, computed} from 'vue'
 import ListaTarea from './components/ListaTarea.vue';
 import FormTarea from './components/FormTarea.vue';
 import EditarTarea from './components/EditarTarea.vue';
 
 // estado para almacenar las tareas
 const tareas = ref([]);
+const filtro = ref('Todas'); // estado para el filtro de tareas
 
 const dialog = ref(false); // estado para controlar el modal de edición
 const tareaEdit = ref({}); // tarea seleccionada para editar
@@ -69,6 +70,20 @@ function actualizarTarea(tareaActualizada) {
   }
 }
 
+// computed para aplicar filtros a las tareas 
+const tareasFiltradas = computed(() => {
+  let resultado = [...tareas.value];
+
+  // aplicar filtro
+  if (filtro.value === 'Pendientes') {
+    resultado = resultado.filter(t => !t.completada);
+  } else if (filtro.value === 'Completadas') {
+    resultado = resultado.filter(t => t.completada);
+  }
+
+  return resultado;
+});
+
 // cargar tareas al iniciar la app 
 onMounted(async() =>{
   obtenerTareas();
@@ -77,20 +92,34 @@ onMounted(async() =>{
 </script>
 
 <template>
-  <div>
-    <h1>Lista de Tareas</h1>
-    <!-- pasar funciones y estados como props -->
-    <FormTarea @agregar-tarea="agregarTarea" />
-    <ListaTarea :tareas="tareas" 
-      @eliminar-tarea="eliminarTarea" 
-      @editar="abrirModalEdicion" />
+  <v-app>
+    <v-main>
+      <h1 class="text-center">Lista de Tareas</h1>
+      <v-container>
+        <!-- barra de ordenamiento y filtros -->
+          <v-row class="mb-4">
+          <v-col cols="6">
+            <v-select
+              v-model="filtro"
+              :items="['Todas', 'Pendientes', 'Completadas']"
+              label="Filtrar tareas"
+            />
+          </v-col>
+        </v-row>
+        <div>          
+          <!-- pasar funciones y estados como props -->
+          <FormTarea @agregar-tarea="agregarTarea" /> <!-- formulario de creacion de tareas -->
+          <!-- lista de tareas -->
+          <ListaTarea :tareas="tareasFiltradas" @eliminar-tarea="eliminarTarea" @editar="abrirModalEdicion" />
 
-    <!-- Modal de edición como componente independiente -->
-    <EditarTarea v-model="dialog" 
-      :tarea="tareaEdit" 
-      @tarea-editada="actualizarTarea" />
+          <!-- Modal de edición como componente independiente -->
+          <EditarTarea v-model="dialog" :tarea="tareaEdit" @tarea-editada="actualizarTarea" />
 
-  </div>
+        </div>
+      </v-container>
+    </v-main>
+  </v-app>
+
 
 </template>
 
