@@ -24,7 +24,7 @@
 
             <!-- Botones de acción -->
             <div>
-              <v-btn color="primary" @click="editarTarea(tarea)">Editar</v-btn>
+              <v-btn color="primary" @click="editar(tarea)">Editar</v-btn>
               <v-btn color="error" @click="eliminarTarea(tarea.id)">Eliminar</v-btn>
             </div>
           </v-list-item>
@@ -40,7 +40,7 @@ const props = defineProps({
   tareas: { type: Array, required: true }
 });
 
-const emit = defineEmits(["eliminar-tarea"]);
+const emit = defineEmits(["eliminar-tarea", "editar"]);
 
 // función para eliminar tarea (recibe el id de la tarea a eliminar y emite evento al padre) 
 function eliminarTarea(idTarea) {
@@ -48,8 +48,8 @@ function eliminarTarea(idTarea) {
 }
 
 // Función para editar una tarea (por ahora solo muestra un mensaje)
-function editarTarea(tarea) {
-  alert(`Editar tarea: ${tarea.nombre}`);
+function editar(tarea) {
+  emit("editar", tarea);
 }
 
 </script>

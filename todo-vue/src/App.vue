@@ -2,9 +2,13 @@
 import {ref, onMounted} from 'vue'
 import ListaTarea from './components/ListaTarea.vue';
 import FormTarea from './components/FormTarea.vue';
+import EditarTarea from './components/EditarTarea.vue';
 
 // estado para almacenar las tareas
 const tareas = ref([]);
+
+const dialog = ref(false); // estado para controlar el modal de edición
+const tareaEdit = ref({}); // tarea seleccionada para editar
 
 // función para obtener las tareas
 async function obtenerTareas() {
@@ -46,6 +50,25 @@ async function eliminarTarea(idTarea) {
   }
 }
 
+// función para abrir el modal de edición con la tarea seleccionada
+function abrirModalEdicion(tarea) {
+  if (!tarea || typeof tarea !== 'object') {
+    console.error('Tarea inválida para editar:', tarea);
+    alert('Error: No se pudo abrir el modal de edición. Tarea inválida.');
+    return;
+  }
+  tareaEdit.value = {...tarea}; // crear una copia para editar sin modificar la original
+  dialog.value = true; // abrir el modal
+}
+
+// función para actualizar la tarea editada (recibe el evento de EditarTarea)
+function actualizarTarea(tareaActualizada) {
+  const index = tareas.value.findIndex(t => t.id === tareaActualizada.id);
+  if (index !== -1) {
+    tareas.value[index] = tareaActualizada; // actualizar la tarea en la lista
+  }
+}
+
 // cargar tareas al iniciar la app 
 onMounted(async() =>{
   obtenerTareas();
@@ -54,16 +77,20 @@ onMounted(async() =>{
 </script>
 
 <template>
- <div>
-  <h1>Lista de Tareas</h1>
-  <!-- pasar funciones y estados como props -->
-  <FormTarea @agregar-tarea="agregarTarea" />
-  <ListaTarea 
-    :tareas="tareas" 
-    
-    @eliminar-tarea="eliminarTarea" 
-    />
- </div>
+  <div>
+    <h1>Lista de Tareas</h1>
+    <!-- pasar funciones y estados como props -->
+    <FormTarea @agregar-tarea="agregarTarea" />
+    <ListaTarea :tareas="tareas" 
+      @eliminar-tarea="eliminarTarea" 
+      @editar="abrirModalEdicion" />
+
+    <!-- Modal de edición como componente independiente -->
+    <EditarTarea v-model="dialog" 
+      :tarea="tareaEdit" 
+      @tarea-editada="actualizarTarea" />
+
+  </div>
 
 </template>
 
