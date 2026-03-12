@@ -1,5 +1,20 @@
-node_modules/
-dist/
+# Frontend (Vue.js)
+todo-vue/node_modules/
+todo-vue/dist/
+todo-vue/.env
+todo-vue/.env.local
+
+# Backend (.NET)
 TodoApi/bin/
 TodoApi/obj/
+TodoApi/.vs/
+TodoApi/.vscode/
+*.user
+*.suo
+
+# General
 .env
+.DS_Store
+Thumbs.db
+.idea/
+*.log
