@@ -12,6 +12,11 @@ TodoApi/.vscode/
 *.user
 *.suo
 
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+
 # General
 .env
 .DS_Store
