@@ -11,5 +11,8 @@ namespace TodoApi.Data
 
         // DbSet: representa la tabla "Tareas" en la base de datos
         public DbSet<Tarea> Tareas { get; set; }
+
+        // DbSet: representa la tabla "Usuarios" en la base de datos
+        public DbSet<Usuario> Usuarios { get; set; }
     }
 }

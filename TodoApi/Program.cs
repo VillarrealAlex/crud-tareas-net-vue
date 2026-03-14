@@ -1,6 +1,7 @@
 using TodoApi.Data;
 using Microsoft.EntityFrameworkCore;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Configuración de la cadena de conexión a la base de datos
